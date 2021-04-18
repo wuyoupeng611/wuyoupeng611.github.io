@@ -13,6 +13,60 @@
       </tags>
   </entry>
   <entry>
+    <title>docker基础篇</title>
+    <url>/post/a3ab2041/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h3 id="1-Docker介绍"><a href="#1-Docker介绍" class="headerlink" title="1.Docker介绍"></a>1.Docker介绍</h3><ul>
+<li><p>Docker 是一个开源的应用容器引擎，基于Go语言并遵从 Apache2.0 协议开源。</p>
+</li>
+<li><p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
+</li>
+<li><p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
+</li>
+</ul>
+<h3 id="2-Docker的应用场景"><a href="#2-Docker的应用场景" class="headerlink" title="2.Docker的应用场景"></a>2.Docker的应用场景</h3><ul>
+<li><p>Web 应用的自动化打包和发布。</p>
+</li>
+<li><p>自动化测试和持续集成、发布。</p>
+</li>
+<li><p>在服务型环境中部署和调整数据库或其他的后台应用。</p>
+</li>
+<li><p>从头编译或者扩展现有的 OpenShift 或 Cloud Foundry 平台来搭建自己的 PaaS 环境。</p>
+</li>
+</ul>
+<h3 id="3-Docker的优点"><a href="#3-Docker的优点" class="headerlink" title="3.Docker的优点"></a>3.Docker的优点</h3><ul>
+<li><p>Docker 是一个用于开发，交付和运行应用程序的开放平台。</p>
+</li>
+<li><p>Docker 使您能够将应用程序与基础架构分开，从而可以快速交付软件。</p>
+</li>
+<li><p>借助 Docker，您可以与管理应用程序相同的方式来管理基础架构。</p>
+</li>
+<li><p>通过利用 Docker 的方法来快速交付，测试和部署代码，您可以大大减少编写代码和在生产环境中运行代码之间的延迟。</p>
+</li>
+</ul>
+<h3 id="4-Docker的架构"><a href="#4-Docker的架构" class="headerlink" title="4.Docker的架构"></a>4.Docker的架构</h3><ul>
+<li><strong>镜像（Image）</strong>：Docker 镜像（Image）就像是一个模版，可以通过这个模版来创建容器服务。</li>
+<li><strong>容器（Container）</strong>：镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</li>
+<li><strong>仓库（Repository）</strong>：仓库可看成一个代码控制中心，用来保存镜像。</li>
+<li>Docker 使用客户端-服务器 (C/S) 架构模式，使用远程API来管理和创建Docker容器。</li>
+</ul>
+<h3 id="5-镜像命令"><a href="#5-镜像命令" class="headerlink" title="5.镜像命令"></a>5.镜像命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#帮助命令</span></span><br><span class="line">docker version			<span class="comment">#显示docker的版本信息</span></span><br><span class="line">docker info			<span class="comment">#显示docker的系统信息，包括容器和镜像的数量</span></span><br><span class="line">docker 命令 --<span class="built_in">help</span>		<span class="comment">#帮助命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#镜像命令</span></span><br><span class="line">docker images			<span class="comment">#查看所有的镜像</span></span><br><span class="line">docker images -aq		<span class="comment">#-a:列出所有镜像，-q:只显示镜像的id</span></span><br><span class="line">docker search mysql --filter=STARS=3000	<span class="comment">#搜索镜像，且STARS大于3000</span></span><br><span class="line">docker pull mysql:tag		<span class="comment">#下载镜像，如果不写tag，默认就是latest</span></span><br><span class="line">docker rmi -f 镜像id		<span class="comment">#删除指定的镜像</span></span><br><span class="line">docker rmi -f $(docker images -aq)	<span class="comment">#删除全部镜像</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-容器命令"><a href="#6-容器命令" class="headerlink" title="6.容器命令"></a>6.容器命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run [可选参数] image		<span class="comment">#新建容器并启动</span></span><br><span class="line"><span class="comment">#可选参数说明</span></span><br><span class="line">--name=<span class="string">&quot;Name&quot;</span>		<span class="comment">#容器的名字，用来区分同一个镜像创建的</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>docker基础知识</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>linux命令总结</title>
     <url>/post/7f49275c/</url>
     <content><![CDATA[<span id="more"></span>
@@ -48,18 +102,6 @@
       <tags>
         <tag>linux</tag>
         <tag>命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>docker基础篇</title>
-    <url>/post/a3ab2041/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>docker基础知识</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-        <tag>基础</tag>
       </tags>
   </entry>
 </search>
