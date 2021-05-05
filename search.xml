@@ -17,7 +17,7 @@
     <url>/post/a3ab2041/</url>
     <content><![CDATA[<span id="more"></span>
 
-<h3 id="1-Docker介绍"><a href="#1-Docker介绍" class="headerlink" title="1.Docker介绍"></a>1.Docker介绍</h3><ul>
+<h3 id="一-Docker介绍"><a href="#一-Docker介绍" class="headerlink" title="一.Docker介绍"></a>一.Docker介绍</h3><ul>
 <li><p>Docker 是一个开源的应用容器引擎，基于Go语言并遵从 Apache2.0 协议开源。</p>
 </li>
 <li><p>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
@@ -25,7 +25,7 @@
 <li><p>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
 </li>
 </ul>
-<h3 id="2-Docker的应用场景"><a href="#2-Docker的应用场景" class="headerlink" title="2.Docker的应用场景"></a>2.Docker的应用场景</h3><ul>
+<h3 id="二-Docker的应用场景"><a href="#二-Docker的应用场景" class="headerlink" title="二.Docker的应用场景"></a>二.Docker的应用场景</h3><ul>
 <li><p>Web 应用的自动化打包和发布。</p>
 </li>
 <li><p>自动化测试和持续集成、发布。</p>
@@ -35,7 +35,7 @@
 <li><p>从头编译或者扩展现有的 OpenShift 或 Cloud Foundry 平台来搭建自己的 PaaS 环境。</p>
 </li>
 </ul>
-<h3 id="3-Docker的优点"><a href="#3-Docker的优点" class="headerlink" title="3.Docker的优点"></a>3.Docker的优点</h3><ul>
+<h3 id="三-Docker的优点"><a href="#三-Docker的优点" class="headerlink" title="三.Docker的优点"></a>三.Docker的优点</h3><ul>
 <li><p>Docker 是一个用于开发，交付和运行应用程序的开放平台。</p>
 </li>
 <li><p>Docker 使您能够将应用程序与基础架构分开，从而可以快速交付软件。</p>
@@ -45,29 +45,200 @@
 <li><p>通过利用 Docker 的方法来快速交付，测试和部署代码，您可以大大减少编写代码和在生产环境中运行代码之间的延迟。</p>
 </li>
 </ul>
-<h3 id="4-Docker的架构"><a href="#4-Docker的架构" class="headerlink" title="4.Docker的架构"></a>4.Docker的架构</h3><ul>
+<h3 id="四-Docker的架构"><a href="#四-Docker的架构" class="headerlink" title="四.Docker的架构"></a>四.Docker的架构</h3><ul>
 <li><strong>镜像（Image）</strong>：Docker 镜像（Image）就像是一个模版，可以通过这个模版来创建容器服务。</li>
 <li><strong>容器（Container）</strong>：镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。</li>
 <li><strong>仓库（Repository）</strong>：仓库可看成一个代码控制中心，用来保存镜像。</li>
 <li>Docker 使用客户端-服务器 (C/S) 架构模式，使用远程API来管理和创建Docker容器。</li>
 </ul>
-<h3 id="5-镜像命令"><a href="#5-镜像命令" class="headerlink" title="5.镜像命令"></a>5.镜像命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#帮助命令</span></span><br><span class="line">docker version			<span class="comment">#显示docker的版本信息</span></span><br><span class="line">docker info			<span class="comment">#显示docker的系统信息，包括容器和镜像的数量</span></span><br><span class="line">docker 命令 --<span class="built_in">help</span>		<span class="comment">#帮助命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#镜像命令</span></span><br><span class="line">docker images			<span class="comment">#查看所有的镜像</span></span><br><span class="line">docker images -aq		<span class="comment">#-a:列出所有镜像，-q:只显示镜像的id</span></span><br><span class="line">docker search mysql --filter=STARS=3000	<span class="comment">#搜索镜像，且STARS大于3000</span></span><br><span class="line">docker pull mysql:tag		<span class="comment">#下载镜像，如果不写tag，默认就是latest</span></span><br><span class="line">docker rmi -f 镜像id		<span class="comment">#删除指定的镜像</span></span><br><span class="line">docker rmi -f $(docker images -aq)	<span class="comment">#删除全部镜像</span></span><br></pre></td></tr></table></figure>
+<h3 id="五-镜像命令"><a href="#五-镜像命令" class="headerlink" title="五.镜像命令"></a>五.镜像命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#帮助命令</span></span><br><span class="line">docker version			<span class="comment">#显示docker的版本信息</span></span><br><span class="line">docker info			<span class="comment">#显示docker的系统信息，包括容器和镜像的数量</span></span><br><span class="line">docker 命令 --<span class="built_in">help</span>		<span class="comment">#帮助命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#镜像命令</span></span><br><span class="line">docker images			<span class="comment">#查看所有的镜像</span></span><br><span class="line">docker images -aq		<span class="comment">#-a:列出所有镜像，-q:只显示镜像的id</span></span><br><span class="line">docker search mysql --filter=STARS=3000	<span class="comment">#搜索镜像，且STARS大于3000</span></span><br><span class="line">docker pull mysql:tag		<span class="comment">#下载镜像，如果不写tag，默认就是latest</span></span><br><span class="line">docker rmi -f 镜像id		<span class="comment">#删除指定的镜像</span></span><br><span class="line">docker rmi -f $(docker images -aq)	<span class="comment">#删除全部镜像</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h3 id="6-容器命令"><a href="#6-容器命令" class="headerlink" title="6.容器命令"></a>6.容器命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run [可选参数] image		<span class="comment">#新建容器并启动</span></span><br><span class="line"><span class="comment">#可选参数说明</span></span><br><span class="line">--name=<span class="string">&quot;Name&quot;</span>		<span class="comment">#容器的名字，用来区分同一个镜像创建的容器</span></span><br><span class="line">-d			<span class="comment">#后台方式运行</span></span><br><span class="line">-it			<span class="comment">#使用交互方式运行，进入容器查看内容</span></span><br><span class="line">-p 8080:8080		<span class="comment">#指定容器端口，主机端口:容器端口</span></span><br><span class="line"></span><br><span class="line">docker run -it 镜像名 /bin/bash		<span class="comment">#启动并进入容器</span></span><br><span class="line">docker run -d 镜像名			<span class="comment">#后台启动容器</span></span><br><span class="line"><span class="built_in">exit</span>			<span class="comment">#容器停止并退回主机</span></span><br><span class="line">ctrl+p+q		<span class="comment">#容器不停止退出</span></span><br><span class="line">docker <span class="built_in">exec</span> -it 容器id /bin/bash	<span class="comment">#进入正在运行的容器，会开启新的终端</span></span><br><span class="line">docker attach 容器id		<span class="comment">#进入容器正在执行的终端，不会启动新的进程</span></span><br><span class="line">docker ps			<span class="comment">#列出当前正在运行的容器</span></span><br><span class="line">docker ps -aq		<span class="comment">#a:列出当前正在运行的容器和历史运行过得，q:只显示容器编号</span></span><br><span class="line">docker rm 容器id		<span class="comment">#删除指定容器，不能删除正在运行的，</span></span><br><span class="line">docker rm -f $(docker ps -aq)	<span class="comment">#强制删除所有容器</span></span><br><span class="line">docker start 容器id		<span class="comment">#启动容器</span></span><br><span class="line">docker restart 容器id		<span class="comment">#重启容器</span></span><br><span class="line">docker stop 容器id		<span class="comment">#停止当前正在运行的容器</span></span><br><span class="line">docker <span class="built_in">kill</span> 容器id		<span class="comment">#强制停止当前容器</span></span><br></pre></td></tr></table></figure>
+<h3 id="六-容器命令"><a href="#六-容器命令" class="headerlink" title="六.容器命令"></a>六.容器命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run [可选参数] image		<span class="comment">#新建容器并启动</span></span><br><span class="line"><span class="comment">#可选参数说明</span></span><br><span class="line">--name=<span class="string">&quot;Name&quot;</span>		<span class="comment">#容器的名字，用来区分同一个镜像创建的容器</span></span><br><span class="line">-d			<span class="comment">#后台方式运行</span></span><br><span class="line">-it			<span class="comment">#使用交互方式运行，进入容器查看内容</span></span><br><span class="line">-p 8080:8080		<span class="comment">#指定容器端口，主机端口:容器端口</span></span><br><span class="line"></span><br><span class="line">docker run -it 镜像名 /bin/bash		<span class="comment">#启动并进入容器</span></span><br><span class="line">docker run -d 镜像名			<span class="comment">#后台启动容器</span></span><br><span class="line"><span class="built_in">exit</span>			<span class="comment">#容器停止并退回主机</span></span><br><span class="line">ctrl+p+q		<span class="comment">#容器不停止退出</span></span><br><span class="line">docker <span class="built_in">exec</span> -it 容器id /bin/bash	<span class="comment">#进入正在运行的容器，会开启新的终端</span></span><br><span class="line">docker attach 容器id		<span class="comment">#进入容器正在执行的终端，不会启动新的进程</span></span><br><span class="line">docker ps			<span class="comment">#列出当前正在运行的容器</span></span><br><span class="line">docker ps -aq		<span class="comment">#a:列出当前正在运行的容器和历史运行过得，q:只显示容器编号</span></span><br><span class="line">docker rm 容器id		<span class="comment">#删除指定容器，不能删除正在运行的，</span></span><br><span class="line">docker rm -f $(docker ps -aq)	<span class="comment">#强制删除所有容器</span></span><br><span class="line">docker start 容器id		<span class="comment">#启动容器</span></span><br><span class="line">docker restart 容器id		<span class="comment">#重启容器</span></span><br><span class="line">docker stop 容器id		<span class="comment">#停止当前正在运行的容器</span></span><br><span class="line">docker <span class="built_in">kill</span> 容器id		<span class="comment">#强制停止当前容器</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h3 id="7-其它常用命令"><a href="#7-其它常用命令" class="headerlink" title="7.其它常用命令"></a>7.其它常用命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker logs -tf --tail 10 容器id	<span class="comment">#-tf:显示日志，-tail:显示日志条数</span></span><br><span class="line">docker top 容器id		<span class="comment">#查看容器进程信息</span></span><br><span class="line">docker inspect 容器id		<span class="comment">#查看容器元数据</span></span><br><span class="line">docker cp 容器id:容器内路径 目的的主机路径	<span class="comment">#从容器内拷贝文件到主机</span></span><br></pre></td></tr></table></figure>
+<h3 id="七-其它常用命令"><a href="#七-其它常用命令" class="headerlink" title="七.其它常用命令"></a>七.其它常用命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker logs -tf --tail 10 容器id	<span class="comment">#-tf:显示日志，-tail:显示日志条数</span></span><br><span class="line">docker top 容器id		<span class="comment">#查看容器进程信息</span></span><br><span class="line">docker inspect 容器id		<span class="comment">#查看容器元数据</span></span><br><span class="line">docker cp 容器id:容器内路径 目的的主机路径	<span class="comment">#从容器内拷贝文件到主机</span></span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
-        <category>docker基础知识</category>
+        <category>docker基础</category>
       </categories>
       <tags>
         <tag>docker</tag>
         <tag>基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git</title>
+    <url>/post/518e617c/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h3 id="一-Git介绍"><a href="#一-Git介绍" class="headerlink" title="一.Git介绍"></a>一.Git介绍</h3><ul>
+<li>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。</li>
+<li>Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件。</li>
+<li>Git 与常用的版本控制工具 CVS, Subversion 等不同，它采用了分布式版本库的方式。</li>
+</ul>
+<h3 id="二-Git工作区、暂存区和版本库"><a href="#二-Git工作区、暂存区和版本库" class="headerlink" title="二.Git工作区、暂存区和版本库"></a>二.Git工作区、暂存区和版本库</h3><ul>
+<li><strong>工作区：</strong>就是你在电脑里能看到的目录。</li>
+<li><strong>暂存区：</strong>英文叫 stage 或 index。一般存放在 <strong>.git</strong> 目录下的 index 文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。</li>
+<li><strong>版本库：</strong>工作区有一个隐藏目录 <strong>.git</strong>，这个不算工作区，而是 Git 的版本库。</li>
+<li>[工作区、版本库中的暂存区和版本库之间的关系](<a href="https://www.runoob.com/git/git-workspace-index-repo.html">Git 工作区、暂存区和版本库 | 菜鸟教程 (runoob.com)</a>)</li>
+</ul>
+<h3 id="三-Git的工作流程"><a href="#三-Git的工作流程" class="headerlink" title="三.Git的工作流程"></a>三.Git的工作流程</h3><ol>
+<li><p>从远程仓库中克隆代码到本地仓库。</p>
+</li>
+<li><p>从本地仓库中checkout代码，然后进行代码修改。</p>
+</li>
+<li><p>在提交前先将代码提交到暂存区。</p>
+</li>
+<li><p>提交到本地仓库，本地仓库中保存需改的各个历史版本。</p>
+<p><img data-src="D:\blog\source_posts\git的使用\Snipaste_2021-05-04_21-39-27.png" alt="工作流程"></p>
+</li>
+</ol>
+<h3 id="四-Git的使用"><a href="#四-Git的使用" class="headerlink" title="四.Git的使用"></a>四.Git的使用</h3><h4 id="1-Git的环境配置"><a href="#1-Git的环境配置" class="headerlink" title="1.Git的环境配置"></a>1.Git的环境配置</h4><ul>
+<li><p>当安装Git后首先要做的事情是设置用户名称和email地址。</p>
+</li>
+<li><p>设置用户信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;用户名称&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;email&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>查看用户信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --list</span><br><span class="line">git config user.name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-获取Git仓库"><a href="#2-获取Git仓库" class="headerlink" title="2.获取Git仓库"></a>2.获取Git仓库</h4><p>​    获取Git仓库通常有两种方式：</p>
+<ul>
+<li>在本地初始化一个Git仓库<ol>
+<li>在电脑的任意位置创建一个空目录作为我们的本地Git仓库。</li>
+<li>进入这个目录，点击右键打开<strong>Git bash</strong>窗口。</li>
+<li>执行命令<strong>git init</strong>，如果在当前目录中看到**.git** 文件夹（此文件夹为隐藏文件夹）)则说明Git仓库创建成功。</li>
+</ol>
+</li>
+<li>从远程仓库克隆<ol>
+<li>可以通过Git提供的命令从远程仓库进行克隆，将远程仓库克隆到本地。</li>
+<li>命令形式：<strong>git clone 远程Git仓库地址</strong></li>
+</ol>
+</li>
+</ul>
+<h4 id="3-本地仓库操作"><a href="#3-本地仓库操作" class="headerlink" title="3.本地仓库操作"></a>3.本地仓库操作</h4><ol>
+<li><p>Git工作目录下的<strong>文件</strong>存在两种状态：</p>
+<ul>
+<li><strong>untracked</strong>未跟踪（未被纳入版本控制）</li>
+<li><strong>tracked</strong>已跟踪（被纳入版本控制）<ul>
+<li><strong>unmodified</strong>未修改状态</li>
+<li><strong>modified</strong>已修改状态</li>
+<li><strong>staged</strong>已暂存状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Git的本地仓库基本命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git status				<span class="comment">#查看文件状态</span></span><br><span class="line">git add 文件名			<span class="comment">#将未跟踪的文件加入暂存区</span></span><br><span class="line">git reset 文件名			<span class="comment">#将暂存区的文件取消暂存</span></span><br><span class="line">git commit -m <span class="string">&quot;日志&quot;</span> 文件名		<span class="comment">#将暂存区的文件修改提交到本地仓库</span></span><br><span class="line">git rm 文件名			<span class="comment">#删除文件</span></span><br><span class="line">git <span class="built_in">log</span>				<span class="comment">#查看日志</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="4-远程仓库的操作"><a href="#4-远程仓库的操作" class="headerlink" title="4.远程仓库的操作"></a>4.远程仓库的操作</h4><ul>
+<li>查看远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote			<span class="comment">#git克隆的仓库服务器的默认名称为origin</span></span><br><span class="line">git remote -v</span><br><span class="line">git remote show origin</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add &lt;shortname&gt; &lt;url&gt;			<span class="comment">#添加一个新的远程Git仓库，同时指定一个可以引用的简写</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从远程仓库克隆</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;url&gt;			<span class="comment">#把该Git仓库服务器上的几乎所有数据（包括日志信息、历史记录等）都克隆，而不仅仅是复制工作所需要的文件</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>移除无效的远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rm &lt;shortname&gt;			<span class="comment">#此命令只是从本地移除远程仓库的记录，并不会真正影响到远程仓库</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从远程仓库中抓取与拉取</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，不会自动merge</span></span><br><span class="line">git merge [remote-name] [branch-name]</span><br><span class="line">git pull [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，会自动merge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal：refusing to merge unrelated histories），解决此问题可以在 git pull 命令后加入参数 --allow-unrealted-histories</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>推送到远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push [remote-name] [branch-name]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="五-分支"><a href="#五-分支" class="headerlink" title="五.分支"></a>五.分支</h3><ul>
+<li>查看分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch				<span class="comment">#列出所有本地分支</span></span><br><span class="line">git branch -r			<span class="comment">#列出所有远程分支</span></span><br><span class="line">git brach -a			<span class="comment">#列出所有本地分支和远程分支</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch (branchname)</span><br><span class="line"><span class="comment">#当你执行 git init 的时候，默认情况下 Git 就会为你创建 master 分支。如果我们要手动创建一个分支。执行 git branch (branchname) 即可</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>切换分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout (branchname)</span><br><span class="line"><span class="comment">#当你切换分支的时候，Git 会用该分支的最后提交的快照替换你的工作目录的内容， 所以多个分支不需要多个目录。</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>推送至远程仓库分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (branch-name)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>合并分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -d (branchname)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img data-src="C:\Users\W-Y-P\AppData\Roaming\Typora\typora-user-images\image-20210505215937507.png" alt="image-20210505215937507"></p>
+<h3 id="六-标签"><a href="#六-标签" class="headerlink" title="六.标签"></a>六.标签</h3><ul>
+<li>列出已有的标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag			<span class="comment">#列出已有标签</span></span><br><span class="line">git show (tagname)			<span class="comment">#查看tag信息</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建新标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -a (tagname)			<span class="comment">#-a 选项意为&quot;创建一个带注解的标签&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将标签推送至远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (tag-name)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>检出标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b (branch-name) (tag-name)		<span class="comment">#新建一个分支，指向指定标签</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -d (tagname)</span><br><span class="line">git push (remote-name) :refs/tags/(tag-name)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>git使用</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>命令</tag>
       </tags>
   </entry>
   <entry>
@@ -104,8 +275,8 @@
         <category>linux命令</category>
       </categories>
       <tags>
-        <tag>linux</tag>
         <tag>命令</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
 </search>
