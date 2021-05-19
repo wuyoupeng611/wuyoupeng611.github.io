@@ -27,12 +27,13 @@
 </ul>
 </li>
 <li><p>修改配置 -&gt; 实现反向代理</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  server &#123;</span><br><span class="line">      listen       80;</span><br><span class="line">      server_name  www.wyp611.com;<span class="comment"># 服务器地址或绑定域名</span></span><br><span class="line">  </span><br><span class="line">      location / &#123; <span class="comment"># 访问80端口后的所有路径都转发到 proxy_pass 配置的ip中</span></span><br><span class="line">          root   /usr/share/nginx/html;</span><br><span class="line">          index  index.html index.htm;</span><br><span class="line">             proxy_pass http://wyp611.top; <span class="comment"># 配置反向代理的ip地址和端口号 【注：url地址需加上https://】</span></span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"><span class="comment">#注意：每次改完nginx配置，都需要出来docker stop nginx  和  docker start nginx才能使配置生效</span></span><br></pre></td></tr></table></figure></li>
-<li><p>复杂配置 -&gt; 根据不同的后缀名访问不同的服务器地址</p>
-</li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  www.wyp611.com;<span class="comment"># 服务器地址或绑定域名</span></span><br><span class="line"></span><br><span class="line">    location / &#123; <span class="comment"># 访问80端口后的所有路径都转发到 proxy_pass 配置的ip中</span></span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">           proxy_pass http://wyp611.top; <span class="comment"># 配置反向代理的ip地址和端口号 【注：url地址需加上https://】</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
 </ul>
+<p>#注意：每次改完nginx配置，都需要出来docker stop nginx  和  docker start nginx才能使配置生效</p>
+<pre><code><figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>复杂配置 -&gt; 根据不同的后缀名访问不同的服务器地址</span><br><span class="line"></span><br><span class="line"><span class="code">  </span></span><br></pre></td></tr></table></figure>
+</code></pre>
 </li>
 <li><p>负载均衡</p>
 <ul>
@@ -45,9 +46,15 @@
 <li><p>负载均衡的几种常用方式</p>
 <ul>
 <li><p>轮询（默认）：每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  upstream backserver &#123;</span><br><span class="line">      server 192.168.0.14;</span><br><span class="line">      server 192.168.0.15;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">location / &#123; </span><br><span class="line">  	proxy_pass http://backserver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>weight：指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  upstream backserver &#123;</span><br><span class="line">    server 192.168.0.14 weight=3;</span><br><span class="line">      server 192.168.0.15 weight=7;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream backserver &#123;</span><br><span class="line">    server 192.168.0.14;</span><br><span class="line">    server 192.168.0.15;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>location / { </p>
+<pre><code>  proxy_pass http://backserver;
+</code></pre>
+<p>}</p>
+  <figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- weight：指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</span><br><span class="line"></span><br><span class="line">  ```bash</span><br><span class="line">  upstream backserver &#123;</span><br><span class="line">   <span class="built_in"> server </span>192.168.0.14 <span class="attribute">weight</span>=3;</span><br><span class="line">     <span class="built_in"> server </span>192.168.0.15 <span class="attribute">weight</span>=7;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
 <li><p>ip_hash：上述方式存在一个问题就是说，在负载均衡系统中，假如用户在某台服务器上登录了，那么该用户第二次请求的时候，因为我们是负载均衡系统，每次请求都会重新定位到服务器集群中的某一个，那么<strong>已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的</strong>。我们可以采用<strong>ip_hash</strong>指令解决这个问题，如果客户已经访问了某个服务器，当用户再次访问时，会将该请求通过<strong>哈希算法，自动定位到该服务器，每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题</strong>。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  upstream backserver &#123;</span><br><span class="line">      ip_hash;</span><br><span class="line">    server 192.168.0.14:88;</span><br><span class="line">      server 192.168.0.15:80;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>fair：按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
@@ -84,8 +91,10 @@
         <category>nginx</category>
       </categories>
       <tags>
-        <tag>nginx</tag>
-        <tag>基础</tag>
+        <tag>反向代理</tag>
+        <tag>负载均衡</tag>
+        <tag>动静分离</tag>
+        <tag>配置文件</tag>
       </tags>
   </entry>
   <entry>
@@ -101,7 +110,7 @@
       </tags>
   </entry>
   <entry>
-    <title>docker基础</title>
+    <title>docker初学</title>
     <url>/post/a3ab2041/</url>
     <content><![CDATA[<span id="more"></span>
 
@@ -160,177 +169,6 @@
       <tags>
         <tag>镜像</tag>
         <tag>容器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>git</title>
-    <url>/post/518e617c/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h3 id="一-Git介绍"><a href="#一-Git介绍" class="headerlink" title="一.Git介绍"></a>一.Git介绍</h3><ul>
-<li>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。</li>
-<li>Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件。</li>
-<li>Git 与常用的版本控制工具 CVS, Subversion 等不同，它采用了分布式版本库的方式。</li>
-</ul>
-<h3 id="二-Git工作区、暂存区和版本库"><a href="#二-Git工作区、暂存区和版本库" class="headerlink" title="二.Git工作区、暂存区和版本库"></a>二.Git工作区、暂存区和版本库</h3><ul>
-<li><strong>工作区：</strong>就是你在电脑里能看到的目录。</li>
-<li><strong>暂存区：</strong>英文叫 stage 或 index。一般存放在 <strong>.git</strong> 目录下的 index 文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。</li>
-<li><strong>版本库：</strong>工作区有一个隐藏目录 <strong>.git</strong>，这个不算工作区，而是 Git 的版本库。</li>
-<li>[工作区、版本库中的暂存区和版本库之间的关系](<a href="https://www.runoob.com/git/git-workspace-index-repo.html">Git 工作区、暂存区和版本库 | 菜鸟教程 (runoob.com)</a>)</li>
-</ul>
-<h3 id="三-Git的工作流程"><a href="#三-Git的工作流程" class="headerlink" title="三.Git的工作流程"></a>三.Git的工作流程</h3><ol>
-<li><p>从远程仓库中克隆代码到本地仓库。</p>
-</li>
-<li><p>从本地仓库中checkout代码，然后进行代码修改。</p>
-</li>
-<li><p>在提交前先将代码提交到暂存区。</p>
-</li>
-<li><p>提交到本地仓库，本地仓库中保存需改的各个历史版本。</p>
-<p><img data-src="D:\blog\source_posts\git的使用\Snipaste_2021-05-04_21-39-27.png" alt="工作流程"></p>
-</li>
-</ol>
-<h3 id="四-Git的使用"><a href="#四-Git的使用" class="headerlink" title="四.Git的使用"></a>四.Git的使用</h3><h4 id="1-Git的环境配置"><a href="#1-Git的环境配置" class="headerlink" title="1.Git的环境配置"></a>1.Git的环境配置</h4><ul>
-<li><p>当安装Git后首先要做的事情是设置用户名称和email地址。</p>
-</li>
-<li><p>设置用户信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;用户名称&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;email&quot;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>查看用户信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --list</span><br><span class="line">git config user.name</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="2-获取Git仓库"><a href="#2-获取Git仓库" class="headerlink" title="2.获取Git仓库"></a>2.获取Git仓库</h4><p>​    获取Git仓库通常有两种方式：</p>
-<ul>
-<li>在本地初始化一个Git仓库<ol>
-<li>在电脑的任意位置创建一个空目录作为我们的本地Git仓库。</li>
-<li>进入这个目录，点击右键打开<strong>Git bash</strong>窗口。</li>
-<li>执行命令<strong>git init</strong>，如果在当前目录中看到**.git** 文件夹（此文件夹为隐藏文件夹）)则说明Git仓库创建成功。</li>
-</ol>
-</li>
-<li>从远程仓库克隆<ol>
-<li>可以通过Git提供的命令从远程仓库进行克隆，将远程仓库克隆到本地。</li>
-<li>命令形式：<strong>git clone 远程Git仓库地址</strong></li>
-</ol>
-</li>
-</ul>
-<h4 id="3-本地仓库操作"><a href="#3-本地仓库操作" class="headerlink" title="3.本地仓库操作"></a>3.本地仓库操作</h4><ol>
-<li><p>Git工作目录下的<strong>文件</strong>存在两种状态：</p>
-<ul>
-<li><strong>untracked</strong>未跟踪（未被纳入版本控制）</li>
-<li><strong>tracked</strong>已跟踪（被纳入版本控制）<ul>
-<li><strong>unmodified</strong>未修改状态</li>
-<li><strong>modified</strong>已修改状态</li>
-<li><strong>staged</strong>已暂存状态</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Git的本地仓库基本命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git status				<span class="comment">#查看文件状态</span></span><br><span class="line">git add 文件名			<span class="comment">#将未跟踪的文件加入暂存区</span></span><br><span class="line">git reset 文件名			<span class="comment">#将暂存区的文件取消暂存</span></span><br><span class="line">git commit -m <span class="string">&quot;日志&quot;</span> 文件名		<span class="comment">#将暂存区的文件修改提交到本地仓库</span></span><br><span class="line">git rm 文件名			<span class="comment">#删除文件</span></span><br><span class="line">git <span class="built_in">log</span>				<span class="comment">#查看日志</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h4 id="4-远程仓库的操作"><a href="#4-远程仓库的操作" class="headerlink" title="4.远程仓库的操作"></a>4.远程仓库的操作</h4><ul>
-<li>查看远程仓库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote			<span class="comment">#git克隆的仓库服务器的默认名称为origin</span></span><br><span class="line">git remote -v</span><br><span class="line">git remote show origin</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>添加远程仓库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add &lt;shortname&gt; &lt;url&gt;			<span class="comment">#添加一个新的远程Git仓库，同时指定一个可以引用的简写</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>从远程仓库克隆</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;url&gt;			<span class="comment">#把该Git仓库服务器上的几乎所有数据（包括日志信息、历史记录等）都克隆，而不仅仅是复制工作所需要的文件</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>移除无效的远程仓库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rm &lt;shortname&gt;			<span class="comment">#此命令只是从本地移除远程仓库的记录，并不会真正影响到远程仓库</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>从远程仓库中抓取与拉取</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，不会自动merge</span></span><br><span class="line">git merge [remote-name] [branch-name]</span><br><span class="line">git pull [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，会自动merge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal：refusing to merge unrelated histories），解决此问题可以在 git pull 命令后加入参数 --allow-unrealted-histories</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>推送到远程仓库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push [remote-name] [branch-name]</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="五-分支"><a href="#五-分支" class="headerlink" title="五.分支"></a>五.分支</h3><ul>
-<li>查看分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch				<span class="comment">#列出所有本地分支</span></span><br><span class="line">git branch -r			<span class="comment">#列出所有远程分支</span></span><br><span class="line">git brach -a			<span class="comment">#列出所有本地分支和远程分支</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>创建分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch (branchname)</span><br><span class="line"><span class="comment">#当你执行 git init 的时候，默认情况下 Git 就会为你创建 master 分支。如果我们要手动创建一个分支。执行 git branch (branchname) 即可</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>切换分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout (branchname)</span><br><span class="line"><span class="comment">#当你切换分支的时候，Git 会用该分支的最后提交的快照替换你的工作目录的内容， 所以多个分支不需要多个目录。</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>推送至远程仓库分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (branch-name)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>合并分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除分支</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -d (branchname)</span><br></pre></td></tr></table></figure>
-
-
-
-<p><img data-src="C:\Users\W-Y-P\AppData\Roaming\Typora\typora-user-images\image-20210505215937507.png" alt="image-20210505215937507"></p>
-<h3 id="六-标签"><a href="#六-标签" class="headerlink" title="六.标签"></a>六.标签</h3><ul>
-<li>列出已有的标签</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag			<span class="comment">#列出已有标签</span></span><br><span class="line">git show (tagname)			<span class="comment">#查看tag信息</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>创建新标签</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -a (tagname)			<span class="comment">#-a 选项意为&quot;创建一个带注解的标签&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>将标签推送至远程仓库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (tag-name)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>检出标签</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b (branch-name) (tag-name)		<span class="comment">#新建一个分支，指向指定标签</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除标签</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -d (tagname)</span><br><span class="line">git push (remote-name) :refs/tags/(tag-name)</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>git</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-        <tag>命令</tag>
       </tags>
   </entry>
   <entry>
@@ -542,9 +380,9 @@
         <category>docker</category>
       </categories>
       <tags>
-        <tag>挂载</tag>
+        <tag>目录挂载</tag>
         <tag>dockerfile</tag>
-        <tag>网络</tag>
+        <tag>docker网络</tag>
       </tags>
   </entry>
   <entry>
@@ -557,6 +395,198 @@
       <tags>
         <tag>docker</tag>
         <tag>高级用法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git</title>
+    <url>/post/518e617c/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h3 id="一-Git介绍"><a href="#一-Git介绍" class="headerlink" title="一.Git介绍"></a>一.Git介绍</h3><ul>
+<li>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。</li>
+<li>Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件。</li>
+<li>Git 与常用的版本控制工具 CVS, Subversion 等不同，它采用了分布式版本库的方式。</li>
+</ul>
+<h3 id="二-Git工作区、暂存区和版本库"><a href="#二-Git工作区、暂存区和版本库" class="headerlink" title="二.Git工作区、暂存区和版本库"></a>二.Git工作区、暂存区和版本库</h3><ul>
+<li><strong>工作区：</strong>就是你在电脑里能看到的目录。</li>
+<li><strong>暂存区：</strong>英文叫 stage 或 index。一般存放在 <strong>.git</strong> 目录下的 index 文件（.git/index）中，所以我们把暂存区有时也叫作索引（index）。</li>
+<li><strong>版本库：</strong>工作区有一个隐藏目录 <strong>.git</strong>，这个不算工作区，而是 Git 的版本库。</li>
+<li>[工作区、版本库中的暂存区和版本库之间的关系](<a href="https://www.runoob.com/git/git-workspace-index-repo.html">Git 工作区、暂存区和版本库 | 菜鸟教程 (runoob.com)</a>)</li>
+</ul>
+<h3 id="三-Git的工作流程"><a href="#三-Git的工作流程" class="headerlink" title="三.Git的工作流程"></a>三.Git的工作流程</h3><ol>
+<li><p>从远程仓库中克隆代码到本地仓库。</p>
+</li>
+<li><p>从本地仓库中checkout代码，然后进行代码修改。</p>
+</li>
+<li><p>在提交前先将代码提交到暂存区。</p>
+</li>
+<li><p>提交到本地仓库，本地仓库中保存需改的各个历史版本。</p>
+<p><img data-src="D:\blog\source_posts\git的使用\Snipaste_2021-05-04_21-39-27.png" alt="工作流程"></p>
+</li>
+</ol>
+<h3 id="四-Git的使用"><a href="#四-Git的使用" class="headerlink" title="四.Git的使用"></a>四.Git的使用</h3><h4 id="1-Git的环境配置"><a href="#1-Git的环境配置" class="headerlink" title="1.Git的环境配置"></a>1.Git的环境配置</h4><ul>
+<li><p>当安装Git后首先要做的事情是设置用户名称和email地址。</p>
+</li>
+<li><p>设置用户信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;用户名称&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;email&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>查看用户信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --list</span><br><span class="line">git config user.name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-获取Git仓库"><a href="#2-获取Git仓库" class="headerlink" title="2.获取Git仓库"></a>2.获取Git仓库</h4><p>​    获取Git仓库通常有两种方式：</p>
+<ul>
+<li>在本地初始化一个Git仓库<ol>
+<li>在电脑的任意位置创建一个空目录作为我们的本地Git仓库。</li>
+<li>进入这个目录，点击右键打开<strong>Git bash</strong>窗口。</li>
+<li>执行命令<strong>git init</strong>，如果在当前目录中看到**.git** 文件夹（此文件夹为隐藏文件夹）)则说明Git仓库创建成功。</li>
+</ol>
+</li>
+<li>从远程仓库克隆<ol>
+<li>可以通过Git提供的命令从远程仓库进行克隆，将远程仓库克隆到本地。</li>
+<li>命令形式：<strong>git clone 远程Git仓库地址</strong></li>
+</ol>
+</li>
+</ul>
+<h4 id="3-本地仓库操作"><a href="#3-本地仓库操作" class="headerlink" title="3.本地仓库操作"></a>3.本地仓库操作</h4><ol>
+<li><p>Git工作目录下的<strong>文件</strong>存在两种状态：</p>
+<ul>
+<li><strong>untracked</strong>未跟踪（未被纳入版本控制）</li>
+<li><strong>tracked</strong>已跟踪（被纳入版本控制）<ul>
+<li><strong>unmodified</strong>未修改状态</li>
+<li><strong>modified</strong>已修改状态</li>
+<li><strong>staged</strong>已暂存状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Git的本地仓库基本命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git status				<span class="comment">#查看文件状态</span></span><br><span class="line">git add 文件名			<span class="comment">#将未跟踪的文件加入暂存区</span></span><br><span class="line">git reset 文件名			<span class="comment">#将暂存区的文件取消暂存</span></span><br><span class="line">git commit -m <span class="string">&quot;日志&quot;</span> 文件名		<span class="comment">#将暂存区的文件修改提交到本地仓库</span></span><br><span class="line">git rm 文件名			<span class="comment">#删除文件</span></span><br><span class="line">git <span class="built_in">log</span>				<span class="comment">#查看日志</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="4-远程仓库的操作"><a href="#4-远程仓库的操作" class="headerlink" title="4.远程仓库的操作"></a>4.远程仓库的操作</h4><ul>
+<li>查看远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote			<span class="comment">#git克隆的仓库服务器的默认名称为origin</span></span><br><span class="line">git remote -v</span><br><span class="line">git remote show origin</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add &lt;shortname&gt; &lt;url&gt;			<span class="comment">#添加一个新的远程Git仓库，同时指定一个可以引用的简写</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从远程仓库克隆</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;url&gt;			<span class="comment">#把该Git仓库服务器上的几乎所有数据（包括日志信息、历史记录等）都克隆，而不仅仅是复制工作所需要的文件</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>移除无效的远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rm &lt;shortname&gt;			<span class="comment">#此命令只是从本地移除远程仓库的记录，并不会真正影响到远程仓库</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从远程仓库中抓取与拉取</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，不会自动merge</span></span><br><span class="line">git merge [remote-name] [branch-name]</span><br><span class="line">git pull [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，会自动merge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal：refusing to merge unrelated histories），解决此问题可以在 git pull 命令后加入参数 --allow-unrealted-histories</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>推送到远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push [remote-name] [branch-name]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="五-分支"><a href="#五-分支" class="headerlink" title="五.分支"></a>五.分支</h3><ul>
+<li>查看分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch				<span class="comment">#列出所有本地分支</span></span><br><span class="line">git branch -r			<span class="comment">#列出所有远程分支</span></span><br><span class="line">git brach -a			<span class="comment">#列出所有本地分支和远程分支</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch (branchname)</span><br><span class="line"><span class="comment">#当你执行 git init 的时候，默认情况下 Git 就会为你创建 master 分支。如果我们要手动创建一个分支。执行 git branch (branchname) 即可</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>切换分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout (branchname)</span><br><span class="line"><span class="comment">#当你切换分支的时候，Git 会用该分支的最后提交的快照替换你的工作目录的内容， 所以多个分支不需要多个目录。</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>推送至远程仓库分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (branch-name)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>合并分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除分支</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -d (branchname)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img data-src="C:\Users\W-Y-P\AppData\Roaming\Typora\typora-user-images\image-20210505215937507.png" alt="image-20210505215937507"></p>
+<h3 id="六-标签"><a href="#六-标签" class="headerlink" title="六.标签"></a>六.标签</h3><ul>
+<li>列出已有的标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag			<span class="comment">#列出已有标签</span></span><br><span class="line">git show (tagname)			<span class="comment">#查看tag信息</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建新标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -a (tagname)			<span class="comment">#-a 选项意为&quot;创建一个带注解的标签&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将标签推送至远程仓库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push (remote-name) (tag-name)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>检出标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b (branch-name) (tag-name)		<span class="comment">#新建一个分支，指向指定标签</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除标签</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -d (tagname)</span><br><span class="line">git push (remote-name) :refs/tags/(tag-name)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>git</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>命令</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nosql认识</title>
+    <url>/post/d1b72ac1/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+<h3 id="一-NoSQL的介绍"><a href="#一-NoSQL的介绍" class="headerlink" title="一.NoSQL的介绍"></a>一.NoSQL的介绍</h3><ul>
+<li><strong>NoSQL</strong>（<strong>N</strong>ot <strong>o</strong>nly <strong>SQL</strong>），是对不同于传统的<a href="https://zh.wikipedia.org/wiki/%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB">关系数据库</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">数据库管理系统</a>的统称。</li>
+<li>NoSQL用于超大规模数据的存储。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。</li>
+</ul>
+<h3 id="二"><a href="#二" class="headerlink" title="二."></a>二.</h3>]]></content>
+      <categories>
+        <category>nosql</category>
+      </categories>
+      <tags>
+        <tag>nosql</tag>
+        <tag>了解</tag>
+        <tag>CAP</tag>
       </tags>
   </entry>
   <entry>
@@ -620,42 +650,143 @@
       </categories>
       <tags>
         <tag>命令</tag>
-        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
-    <title>redis</title>
+    <title>redis初学</title>
     <url>/post/7b25d017/</url>
     <content><![CDATA[<span id="more"></span>
 
-<h3 id="一"><a href="#一" class="headerlink" title="一."></a>一.</h3>]]></content>
+<h3 id="一-redis介绍"><a href="#一-redis介绍" class="headerlink" title="一. redis介绍"></a>一. redis介绍</h3><ul>
+<li><p>REmote DIctionary Server(Redis) 是一个 key-value 存储系统，是跨平台的非关系型数据库。</p>
+</li>
+<li><p>Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久性的键值对(Key-Value)存储数据库，并提供多种语言的 API。</p>
+</li>
+<li><p>Redis 通常被称为数据结构服务器，因为值（value）可以是字符串(String)、哈希(Hash)、列表(list)、集合(sets)和有序集合(sorted sets)等类型。</p>
+</li>
+<li><p>Redis 中有5大数据类型，3大特殊数据类型。</p>
+</li>
+</ul>
+<h3 id="二-redis-命令"><a href="#二-redis-命令" class="headerlink" title="二. redis 命令"></a>二. redis 命令</h3><ul>
+<li><p>启动 redis 服务器，打开终端并输入命令 <strong>redis-cli</strong>，该命令会连接本地的 redis 服务。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ redis-cli</span><br><span class="line">redis 127.0.0.1:6379&gt;</span><br><span class="line">redis 127.0.0.1:6379&gt; PIN</span><br><span class="line">PONG</span><br></pre></td></tr></table></figure></li>
+<li><p>如果需要在远程 redis 服务上执行命令，同样我们使用的也是 <strong>redis-cli</strong> 命令。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ redis-cli -h host -p port -a password</span><br></pre></td></tr></table></figure></li>
+<li><p>键的命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">DEL KEY_NAME		<span class="comment">#删除已存在的键。不存在的 key 会被忽略</span></span><br><span class="line">DUMP KEY_NAME		<span class="comment">#序列化给定的 key ，并返回被序列化的值</span></span><br><span class="line">EXISTS KEY_NAME		<span class="comment">#检查给定 key 是否存在</span></span><br><span class="line">Expire KEY_NAME TIME_IN_SECONDS		<span class="comment">#设置 key 的过期时间，key 过期后将不再可用（单位以秒计）</span></span><br><span class="line">Expireat KEY_NAME UNIX_TIME		<span class="comment">#以 UNIX 时间戳(unix timestamp)格式设置 key 的过期时间</span></span><br><span class="line">PEXPIRE KEY_NAME milliseconds		<span class="comment">#以毫秒为单位设置 key 的生存时间</span></span><br><span class="line">PEXPIREAT KEY_NAME UNIX_milliseconds		<span class="comment">#以 UNIX 时间戳</span></span><br><span class="line">PTTL KEY_NAME		<span class="comment">#以毫秒为单位返回 key 的剩余过期时间</span></span><br><span class="line">TTL KEY_NAME		<span class="comment">#以秒为单位返回 key 的剩余过期时间</span></span><br><span class="line">PERSIST KEY_NAME		<span class="comment">#移除给定 key 的过期时间，使得 key 永不过期</span></span><br><span class="line">KEYS PATTERN		<span class="comment">#查找所有符合给定模式 pattern 的 key </span></span><br><span class="line">MOVE KEY_NAME DB		<span class="comment">#将当前数据库的 key 移动到给定的数据库 db 当中，当前数据库就没有这个 key 了</span></span><br><span class="line">RANDOMKEY		<span class="comment">#从当前数据库中随机返回一个 key</span></span><br><span class="line">RENAME OLD_KEY_NAME NEW_KEY_NAME		<span class="comment">#修改 key 的名称 </span></span><br><span class="line">RENAMENX OLD_KEY_NAME NEW_KEY_NAME		<span class="comment">#在新的 key 不存在时修改 key 的名称</span></span><br><span class="line">TYPE KEY_NAME 		<span class="comment">#返回 key 所储存的值的类型</span></span><br><span class="line">SCAN cursor [MATCH pattern] [COUNT count]		<span class="comment">#迭代数据库中的数据库键，cursor - 游标，pattern - 匹配的模式，count - 指定从数据集里返回多少元素，默认值为 10 ，</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="三-数据类型"><a href="#三-数据类型" class="headerlink" title="三. 数据类型"></a>三. 数据类型</h3><h4 id="1-String（字符串）"><a href="#1-String（字符串）" class="headerlink" title="1. String（字符串）"></a>1. String（字符串）</h4><ul>
+<li><p>string 是 redis 最基本的类型，你可以理解成与 Memcached 一模一样的类型，一个 key 对应一个 value。</p>
+</li>
+<li><p>string 类型是二进制安全的。意思是 redis 的 string 可以包含任何数据。比如jpg图片或者序列化的对象。</p>
+</li>
+<li><p>string 类型是 Redis 最基本的数据类型，string 类型的值最大能存储 512MB。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">SET KEY_NAME VALUE		<span class="comment">#设置给定 key 的值，如果 key 已经存储其他值， SET 就覆写旧值，且无视类型</span></span><br><span class="line">GET KEY_NAME		<span class="comment">#获取指定 key 的值。如果 key 不存在，返回 nil ，如果key 储存的值不是字符串类型，返回一个错误</span></span><br><span class="line">GETRANGE KEY_NAME start end		<span class="comment">#获取存储在指定 key 中字符串的子字符串</span></span><br><span class="line">SETRANGE KEY_NAME OFFSET VALUE		<span class="comment">#用指定的字符串覆盖给定 key 所储存的字符串值，覆盖的位置从偏移量 offset 开始</span></span><br><span class="line">GETSET KEY_NAME VALUE		<span class="comment">#设置指定 key 的值，并返回 key 的旧值</span></span><br><span class="line">SETNX KEY_NAME VALUE		<span class="comment">#指定的 key 不存在时，为 key 设置指定的值</span></span><br><span class="line">SETEX KEY_NAME TIMEOUT VALUE		<span class="comment">#为指定的 key 设置值及其过期时间。如果 key 已经存在， SETEX 命令将会替换旧的值</span></span><br><span class="line">PSETEX key1 EXPIRY_IN_MILLISECONDS value1		<span class="comment">#以毫秒为单位设置 key 的生存时间</span></span><br><span class="line">STRLEN KEY_NAME			<span class="comment">#获取指定 key 所储存的字符串值的长度</span></span><br><span class="line">MSET key1 value1 key2 value2 .. keyN valueN		<span class="comment">#同时设置一个或多个 key-value 对</span></span><br><span class="line">MGET KEY1 KEY2 .. KEYN		<span class="comment">#返回所有(一个或多个)给定 key 的值</span></span><br><span class="line">MSETNX key1 value1 key2 value2 .. keyN valueN 		<span class="comment">#所有给定 key 都不存在时，同时设置一个或多个 key-value 对</span></span><br><span class="line">INCR KEY_NAME		<span class="comment">#将 key 中储存的数字值增一</span></span><br><span class="line">INCRBY KEY_NAME INCR_AMOUNT		<span class="comment">#将 key 中储存的数字加上指定的增量值</span></span><br><span class="line">INCRBYFLOAT KEY_NAME INCR_AMOUNT		<span class="comment">#为 key 中所储存的值加上指定的浮点数增量值</span></span><br><span class="line">DECR KEY_NAME 		<span class="comment">#将 key 中储存的数字值减一</span></span><br><span class="line">DECRBY KEY_NAME DECREMENT_AMOUNT		<span class="comment">#将 key 所储存的值减去指定的减量值</span></span><br><span class="line">APPEND KEY_NAME NEW_VALUE		<span class="comment">#用于为指定的 key 追加值，如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾。如果 key 不存在， APPEND 就简单地将给定 key 设为 value ，就像执行 SET key value 一样。</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-Hash（哈希）"><a href="#2-Hash（哈希）" class="headerlink" title="2. Hash（哈希）"></a>2. Hash（哈希）</h4><ul>
+<li><p>键值对集合,即编程语言中的Map类型。</p>
+</li>
+<li><p>适合存储对象,并且可以像数据库中update一个属性一样只修改某一项属性值。</p>
+</li>
+<li><p>使用场景：存储、读取、修改用户属性。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">HSET KEY_NAME FIELD VALUE		<span class="comment">#为哈希表中的字段赋值</span></span><br><span class="line">HSETNX KEY_NAME FIELD VALUE		<span class="comment">#为哈希表中不存在的的字段赋值，如果字段已经存在于哈希表中，操作无效。</span></span><br><span class="line">HGET KEY_NAME FIELD_NAME 		<span class="comment">#返回哈希表中指定字段的值</span></span><br><span class="line">HGETALL KEY_NAME		<span class="comment">#返回哈希表中，所有的字段和值</span></span><br><span class="line">HEXISTS KEY_NAME FIELD_NAME		<span class="comment">#查看哈希表的指定字段是否存在</span></span><br><span class="line">HDEL KEY_NAME FIELD1.. FIELDN		<span class="comment">#用于删除哈希表 key 中的一个或多个指定字段，不存在的字段将被忽略</span></span><br><span class="line">HINCRBY KEY_NAME FIELD_NAME INCR_BY_NUMBER		<span class="comment">#为哈希表中的字段值加上指定增量值</span></span><br><span class="line">HINCRBYFLOAT key field increment		<span class="comment">#为哈希表中的字段值加上指定浮点数增量值，如果不存在，在执行命令前，字段的值被初始化为 0 </span></span><br><span class="line">HKEYS key		<span class="comment">#获取哈希表中的所有域（field）</span></span><br><span class="line">HVALS KEY_NAME FIELD VALUE		<span class="comment">#返回哈希表所有域(field)的值</span></span><br><span class="line">HLEN KEY_NAME 		<span class="comment">#获取哈希表中字段的数量</span></span><br><span class="line">HMGET KEY_NAME FIELD1...FIELDN		<span class="comment">#返回哈希表中，一个或多个给定字段的值</span></span><br><span class="line">HMSET KEY_NAME FIELD1 VALUE1 ...FIELDN VALUEN		<span class="comment">#用于同时将多个 field-value (字段-值)对设置到哈希表中,此命令会覆盖哈希表中已存在的字段。如果哈希表不存在，会创建一个空哈希表，并执行 HMSET 操作</span></span><br><span class="line">HSCAN key cursor [MATCH pattern] [COUNT count]		<span class="comment">#迭代哈希表中的键值对</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-List（列表）"><a href="#3-List（列表）" class="headerlink" title="3. List（列表）"></a>3. List（列表）</h4><ul>
+<li><p>链表(双向链表)，增删快,提供了操作某一段元素的API。</p>
+</li>
+<li><p>使用场景：最新消息排行等功能(比如朋友圈的时间线) ；消息队列。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">LPUSH KEY_NAME VALUE1.. VALUEN		<span class="comment">#将一个或多个值插入到列表头部。 如果 key 不存在，一个空列表会被创建并执行</span></span><br><span class="line">LPUSHX KEY_NAME VALUE1.. VALUEN		<span class="comment">#将一个值插入到已存在的列表头部，列表不存在时操作无效</span></span><br><span class="line">Lpop KEY_NAME		<span class="comment">#移除并返回列表的第一个元素</span></span><br><span class="line">LRANGE KEY_NAME START END		<span class="comment">#返回列表中指定区间内的元素，区间以偏移量 START 和 END 指定，可以使用负数下标</span></span><br><span class="line">RPUSH KEY_NAME VALUE1..VALUEN		<span class="comment">#将一个或多个值插入到列表的尾部(最右边)</span></span><br><span class="line">RPUSHX KEY_NAME VALUE		<span class="comment">#将一个值插入到已存在的列表尾部(最右边)。如果列表不存在，操作无效</span></span><br><span class="line">RPOP KEY_NAME		<span class="comment">#用于移除列表的最后一个元素，返回值为移除的元素</span></span><br><span class="line">RPOPLPUSH SOURCE_KEY_NAME DESTINATION_KEY_NAME		<span class="comment">#用于移除列表的最后一个元素，并将该元素添加到另一个列表并返回</span></span><br><span class="line">BLPOP LIST1 ... TIMEOUT		<span class="comment">#移出并获取列表的第一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止</span></span><br><span class="line">BRPOP LIST1 LIST2 .. LISTN TIMEOUT		<span class="comment">#出并获取列表的最后一个元素,如果列表没有元素..</span></span><br><span class="line">BRPOPLPUSH LIST1 ANOTHER_LIST TIMEOUT		<span class="comment">#从列表中取出最后一个元素，并插入到另外一个列表的头部,如果列表没有元素..</span></span><br><span class="line">LLEN KEY_NAME		<span class="comment">#返回列表的长度。 如果列表 key 不存在，则 key 被解释为一个空列表，返回 0</span></span><br><span class="line">LINDEX KEY_NAME INDEX_POSITION		<span class="comment">#通过索引获取列表中的元素。以 -1 表示列表的最后一个元素，-2 表示列表的倒数第二个</span></span><br><span class="line">LINSERT key BEFORE|AFTER pivot value		<span class="comment">#在列表的元素前或者后插入元素</span></span><br><span class="line">LSET KEY_NAME INDEX VALUE		<span class="comment">#通过索引来设置元素的值</span></span><br><span class="line">LTRIM KEY_NAME START STOP		<span class="comment">#对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素</span></span><br><span class="line">LREM key count VALUE		<span class="comment">#根据参数 COUNT 的值，移除列表中与参数 VALUE 相等的元素</span></span><br><span class="line">							<span class="comment">#count &gt; 0 : 从表头开始向表尾搜索，移除与 VALUE 相等的元素，数量为 COUNT 。</span></span><br><span class="line">							<span class="comment">#count &lt; 0 : 从表尾开始向表头搜索，移除与 VALUE 相等的元素，数量为 COUNT 的绝对值。</span></span><br><span class="line">							<span class="comment">#count = 0 : 移除表中所有与 VALUE 相等的值。</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="4-Set（集合）"><a href="#4-Set（集合）" class="headerlink" title="4. Set（集合）"></a>4. Set（集合）</h4><ul>
+<li><p>Redis 的 Set 是 string 类型的无序集合。</p>
+</li>
+<li><p>集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是 O(1)，为集合提供了求交集、并集、差集等操作。</p>
+</li>
+<li><p>使用场景：共同好友 ；利用唯一性,统计访问网站的所有独立ip ；好友推荐时,根据tag求交集,大于某个阈值就可以推荐。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">SADD KEY_NAME VALUE1..VALUEN		<span class="comment">#将一个或多个成员元素加入到集合中，已经存在于集合的成员元素将被忽略</span></span><br><span class="line">SCARD KEY_NAME		<span class="comment">#返回集合中元素的数量</span></span><br><span class="line">SISMEMBER KEY VALUE		<span class="comment">#判断成员元素是否是集合的成员</span></span><br><span class="line">SMEMBERS key		<span class="comment">#返回集合中的所有的成员</span></span><br><span class="line">SMOVE SOURCE DESTINATION MEMBER		<span class="comment">#指定成员 member 元素从 source 集合移动到 destination集合,SMOVE是原子性操作</span></span><br><span class="line">SPOP key [count]		<span class="comment">#移除集合中的指定 key 的一个或多个随机元素，移除后会返回移除的元素</span></span><br><span class="line">SRANDMEMBER KEY [count]		<span class="comment">#用于返回集合中的一个随机元素</span></span><br><span class="line">SREM KEY MEMBER1..MEMBERN		<span class="comment">#移除集合中的一个或多个成员元素，不存在的成员元素会被忽略</span></span><br><span class="line">SDIFF FIRST_KEY OTHER_KEY1..OTHER_KEYN		<span class="comment">#返回第一个集合与其他集合之间的差异，也可以认为说第一个集合中独有的元素</span></span><br><span class="line">SINTER KEY KEY1..KEYN		<span class="comment">#返回给定所有给定集合的交集</span></span><br><span class="line">SUNION KEY KEY1..KEYN		<span class="comment">#返回给定集合的并集。不存在的集合 key 被视为空集</span></span><br><span class="line">SUNIONSTORE destination key [key ...]		<span class="comment">#将给定集合的并集存储在指定的集合 destination 中</span></span><br><span class="line">SSCAN key cursor [MATCH pattern] [COUNT count]		<span class="comment">#迭代集合中键的元素</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="5-ZSet（sorted-set：有序集合）"><a href="#5-ZSet（sorted-set：有序集合）" class="headerlink" title="5.ZSet（sorted set：有序集合）"></a>5.ZSet（sorted set：有序集合）</h4><ul>
+<li><p>zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。不同的是每个元素都会关联一个double类型的权重参数score。redis正是通过score来为集合中的成员进行从小到大的排序。</p>
+</li>
+<li><p>数据插入集合时,已经进行天然排序，zset的成员是唯一的,但分数(score)却可以重复。</p>
+</li>
+<li><p>使用场景：排行榜 ；带权重的消息队列。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ZADD KEY_NAME SCORE1 VALUE1.. SCOREN VALUEN		<span class="comment">#向有序集合添加一个或多个成员，或者更新已存在成员的分数</span></span><br><span class="line">ZCARD KEY_NAME		<span class="comment">#计算集合中元素的数量</span></span><br><span class="line">ZCOUNT key min max		<span class="comment">#计算在有序集合中指定区间分数的成员数</span></span><br><span class="line">ZINCRBY key increment member		<span class="comment">#对有序集合中指定成员的分数加上增量 increment</span></span><br><span class="line">ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]</span><br><span class="line"><span class="comment">#算给定的一个或多个有序集的交集，其中给定 key 的数量必须以 numkeys 参数指定，并将该交集(结果集)储存到 destination </span></span><br><span class="line">ZLEXCOUNT KEY MIN MAX		<span class="comment">#计算有序集合中指定字典区间内成员数量</span></span><br><span class="line">ZRANGE key start stop [WITHSCORES]		<span class="comment">#返回有序集中，指定区间内的成员</span></span><br><span class="line">ZRANGEBYLEX key min max [LIMIT offset count]		<span class="comment">#通过字典区间返回有序集合的成员</span></span><br><span class="line">ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]		<span class="comment">#返回有序集合中指定分数区间的成员列表</span></span><br><span class="line">ZRANK key member		<span class="comment">#返回有序集合中指定成员的索引</span></span><br><span class="line">ZREM key member [member ...]		<span class="comment">#移除有序集合中的一个或多个成员，不存在的成员将被忽略</span></span><br><span class="line">ZREMRANGEBYLEX key min max		<span class="comment">#移除有序集合中给定的字典区间的所有成员</span></span><br><span class="line">ZREMRANGEBYRANK key start stop		<span class="comment">#移除有序集中，指定排名(rank)区间内的所有成员</span></span><br><span class="line">ZREMRANGEBYSCORE key min max		<span class="comment">#移除有序集中，指定分数（score）区间内的所有成员</span></span><br><span class="line">ZREVRANGE key start stop [WITHSCORES]		<span class="comment">#返回有序集中，指定区间内的成员，按分数值递减(从大到小)来排列</span></span><br><span class="line">ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT offset count]		<span class="comment">#返回有序集中指定分数区间内的所有的成员</span></span><br><span class="line">ZREVRANK key member		<span class="comment">#返回有序集中成员的排名。其中有序集成员按分数值递减(从大到小)排序。</span></span><br><span class="line">ZSCORE key member		<span class="comment">#返回有序集中，成员的分数值。 如果成员元素不是有序集 key 的成员，或 key 不存在，返回 nil</span></span><br><span class="line">ZUNIONSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]</span><br><span class="line"><span class="comment">#计算给定的一个或多个有序集的并集，其中给定 key 的数量必须以 numkeys 参数指定，并将该并集(结果集)储存到 destination</span></span><br><span class="line">ZSCAN key cursor [MATCH pattern] [COUNT count]		<span class="comment">#迭代有序集合中的元素（包括元素成员和元素分值）</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="6-Geospatial"><a href="#6-Geospatial" class="headerlink" title="6. Geospatial"></a>6. Geospatial</h4><ul>
+<li><p>Redis 的 GEO 特性在 Redis 3.2 版本中推出， 这个功能可以将用户给定的地理位置信息储存起来， 并对这些信息进行操作。</p>
+</li>
+<li><p>GEO 底层的实现原理其实就是 Zset！我们可以使用Zset命令来操作geo</p>
+</li>
+<li><p>有效的经度从-180度到180度。</p>
+</li>
+<li><p>有效的纬度从-85.05112878度到85.05112878度。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">geoadd key longitud(经度) latitude(纬度) member	[member..]	<span class="comment">#将一个/多个具体经纬度的坐标存入一个有序集合</span></span><br><span class="line">geopos key member [member..]		<span class="comment">#获取集合中的一个/多个成员坐标</span></span><br><span class="line">geodist key member1 member2 [unit]		<span class="comment">#返回两个给定位置之间的距离，unit：m、km、mi 英里、ft 英尺</span></span><br><span class="line">georadius key longitude latitude radius m|km|mi|ft [WITHCOORD][WITHDIST] [WITHHASH] [COUNT count]</span><br><span class="line"><span class="comment">#以给定的经纬度为中心， 返回集合包含的位置元素当中， 与中心的距离不超过给定最大距离的所有位置元素</span></span><br><span class="line"><span class="comment">#WITHDIST：在返回位置元素的同时， 将位置元素与中心之间的距离也一并返回</span></span><br><span class="line"><span class="comment">#WITHCOORD：将位置元素的经度和维度也一并返回</span></span><br><span class="line"><span class="comment">#WITHHASH：以 52 位有符号整数的形式， 返回位置元素经过原始 geohash 编码的有序集合分值。这个选项主要用于底层应用或者调试， 实际中的作用并不大。</span></span><br><span class="line">GEORADIUSBYMEMBER key member radius		<span class="comment">#功能与GEORADIUS相同，只是中心位置不是具体的经纬度，而是使用已有的成员</span></span><br><span class="line">geohash key member1 [member..]		<span class="comment">#返回一个或多个位置元素的Geohash表示，使用Geohash位置52点整数编码</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="7-Hyperloglog（基数统计）"><a href="#7-Hyperloglog（基数统计）" class="headerlink" title="7. Hyperloglog（基数统计）"></a>7. Hyperloglog（基数统计）</h4><ul>
+<li><p>底层使用string数据类型。</p>
+</li>
+<li><p>占用的内存是固定，2^64 不同的元素的技术，只需要废 12KB内存。</p>
+</li>
+<li><p>如果允许容错，那么一定可以使用Hyperloglog ，如果不允许容错，就使用set或者自己的数据类型即可。</p>
+</li>
+<li><p>使用场景：网页的访问量。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PFADD key element1 [elememt2..]		<span class="comment">#添加指定元素到 HyperLogLog 中</span></span><br><span class="line">PFCOUNT key [key]		<span class="comment">#返回给定 HyperLogLog 的基数估算值</span></span><br><span class="line">PFMERGE destkey sourcekey [sourcekey..]		<span class="comment">#将多个 HyperLogLog 合并为一个 HyperLogLog</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="8-Bitmap（位图）"><a href="#8-Bitmap（位图）" class="headerlink" title="8. Bitmap（位图）"></a>8. Bitmap（位图）</h4><ul>
+<li><p>使用位存储，信息状态只有 0 和 1。</p>
+</li>
+<li><p>Bitmap是一串连续的2进制数字（0或1），每一位所在的位置为偏移(offset)。</p>
+</li>
+<li><p>在bitmap上可执行AND,OR,XOR,NOT以及其它位操作。</p>
+</li>
+<li><p>使用场景：签到统计、状态统计，两个状态的，都可以使用 Bitmaps。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setbit key offset value		<span class="comment">#为指定key的offset位设置值</span></span><br><span class="line">getbit key offset		<span class="comment">#获取offset位的值</span></span><br><span class="line">bitcount key [start end]		<span class="comment">#统计字符串被设置为1的bit数，也可以指定统计范围按字节</span></span><br><span class="line">bitop operration destkey key[key..]		<span class="comment">#对一个或多个保存二进制位的字符串 key 进行位元操作，并将结果保存到destkey上</span></span><br><span class="line">bitpos key bit [start] [end]		<span class="comment">#返回字符串里面第一个被设置为1或者0的bit位,start和end只能按字节,不能按位</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="四-事务"><a href="#四-事务" class="headerlink" title="四. 事务"></a>四. 事务</h3><h4 id="1-Redis-事务"><a href="#1-Redis-事务" class="headerlink" title="1. Redis 事务"></a>1. Redis 事务</h4><ul>
+<li>Redis 事务可以一次执行多个命令， 并且带有以下三个重要的保证：<ul>
+<li>批量操作在发送 EXEC 命令前被放入队列缓存。</li>
+<li>收到 EXEC 命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行。</li>
+<li>在事务执行过程，其他客户端提交的命令请求不会插入到事务执行命令序列中。</li>
+</ul>
+</li>
+<li>一个事务从开始到执行会经历以下三个阶段：<ul>
+<li>开始事务（<strong>MULTI</strong> ）</li>
+<li>命令入队</li>
+<li>执行事务（<strong>EXEC</strong> ）</li>
+</ul>
+</li>
+<li>单个 Redis 命令的执行是原子性的，但 Redis 没有在事务上增加任何维持原子性的机制，所以 Redis 事务的执行并不是原子性的。</li>
+<li>编译型异常（代码有问题，命令有错），事务中所有的命令都不会被执行。</li>
+<li>运行时异常（1 / 0），如果事务队列中存在语法性，那么执行命令的时候，其他命令是可以正常执行的，错误命令跑出异常。</li>
+</ul>
+<h4 id="2-事务命令"><a href="#2-事务命令" class="headerlink" title="2. 事务命令"></a>2. 事务命令</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MULTI		<span class="comment">#标记一个事务块的开始</span></span><br><span class="line">DISCARD		<span class="comment">#取消事务，放弃执行事务块内的所有命令</span></span><br><span class="line">EXEC		<span class="comment">#执行所有事务块内的命令</span></span><br><span class="line">WATCH key [key ...]		<span class="comment">#监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断，导致事务执行失败，如果发现事务执行失败，就先解锁，在进行监视</span></span><br><span class="line">UNWATCH		<span class="comment">#取消 WATCH 命令对所有 key 的监视</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-实例"><a href="#3-实例" class="headerlink" title="3. 实例"></a>3. 实例</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">redis 127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; SET name <span class="string">&quot;hello redis&quot;</span></span><br><span class="line">QUEUED</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; GET name</span><br><span class="line">QUEUED</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; SADD tag <span class="string">&quot;hello&quot;</span> <span class="string">&quot;redis&quot;</span></span><br><span class="line">QUEUED</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; SMEMBERS tag</span><br><span class="line">QUEUED</span><br><span class="line"></span><br><span class="line">redis 127.0.0.1:6379&gt; EXEC</span><br><span class="line">1) OK</span><br><span class="line">2) <span class="string">&quot;hello redis&quot;</span></span><br><span class="line">3) (<span class="built_in">integer</span>) 2</span><br><span class="line">4) 1) <span class="string">&quot;hello&quot;</span></span><br><span class="line">   2) <span class="string">&quot;redis&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="五-Jedis"><a href="#五-Jedis" class="headerlink" title="五. Jedis"></a>五. Jedis</h3><h4 id="1-Jedis-介绍"><a href="#1-Jedis-介绍" class="headerlink" title="1. Jedis 介绍"></a>1. Jedis 介绍</h4><ul>
+<li><strong>Jedis</strong> 是 Redis 官方推荐的 java 连接开发工具，使用 java 操作 Redis 的中间件。</li>
+</ul>
+<h4 id="2-连接-redis-服务"><a href="#2-连接-redis-服务" class="headerlink" title="2. 连接 redis 服务"></a>2. 连接 redis 服务</h4><ul>
+<li><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>连接</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPing</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//连接本地的 Redis 服务</span></span><br><span class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">&quot;localhost&quot;</span>,<span class="number">6379</span>);</span><br><span class="line">        <span class="comment">// 如果 Redis 服务设置了密码，需要下面这行，没有就不需要</span></span><br><span class="line">        <span class="comment">// jedis.auth(&quot;123456&quot;); </span></span><br><span class="line">        System.out.println(<span class="string">&quot;连接成功&quot;</span>);</span><br><span class="line">        <span class="comment">//查看服务是否运行</span></span><br><span class="line">        System.out.println(<span class="string">&quot;服务正在运行: &quot;</span>+jedis.ping());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
       <categories>
         <category>redis</category>
       </categories>
       <tags>
-        <tag>基础</tag>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>nosql认识</title>
-    <url>/post/d1b72ac1/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-<h3 id="一-NoSQL的介绍"><a href="#一-NoSQL的介绍" class="headerlink" title="一.NoSQL的介绍"></a>一.NoSQL的介绍</h3><ul>
-<li><strong>NoSQL</strong>（<strong>N</strong>ot <strong>o</strong>nly <strong>SQL</strong>），是对不同于传统的<a href="https://zh.wikipedia.org/wiki/%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB">关系数据库</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">数据库管理系统</a>的统称。</li>
-<li>NoSQL用于超大规模数据的存储。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。</li>
-</ul>
-<h3 id="二"><a href="#二" class="headerlink" title="二."></a>二.</h3>]]></content>
-      <categories>
-        <category>nosql</category>
-      </categories>
-      <tags>
-        <tag>nosql</tag>
-        <tag>了解</tag>
-        <tag>CAP</tag>
+        <tag>数据类型</tag>
+        <tag>事务</tag>
+        <tag>jedis</tag>
       </tags>
   </entry>
 </search>
