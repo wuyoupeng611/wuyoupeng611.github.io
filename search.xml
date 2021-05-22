@@ -111,6 +111,18 @@
       </tags>
   </entry>
   <entry>
+    <title>基于springboot的小blog项目</title>
+    <url>/post/ed9909aa/</url>
+    <content><![CDATA[<span id="more"></span>]]></content>
+      <categories>
+        <category>item</category>
+      </categories>
+      <tags>
+        <tag>blog</tag>
+        <tag>item</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>RabbitMQ</title>
     <url>/post/b543ced0/</url>
     <content><![CDATA[<span id="more"></span>]]></content>
@@ -183,18 +195,6 @@
       <tags>
         <tag>镜像</tag>
         <tag>容器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于springboot的小blog项目</title>
-    <url>/post/ed9909aa/</url>
-    <content><![CDATA[<span id="more"></span>]]></content>
-      <categories>
-        <category>item</category>
-      </categories>
-      <tags>
-        <tag>blog</tag>
-        <tag>item</tag>
       </tags>
   </entry>
   <entry>
@@ -660,7 +660,110 @@
   <entry>
     <title>mybatis</title>
     <url>/post/15832afd/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<span id="more"></span>
+
+<h3 id="一-介绍"><a href="#一-介绍" class="headerlink" title="一. 介绍"></a>一. 介绍</h3><h4 id="1-什么是mybatis"><a href="#1-什么是mybatis" class="headerlink" title="1. 什么是mybatis"></a>1. 什么是mybatis</h4><ul>
+<li>mybatis 是一个半 ORM (对象关系映射)框架，内部封装了 JDBC 流程，开发时只需要关注 SQL 语句本身。</li>
+<li>可以使用 XML 或注解来配置和映射 SQL 语句，将 pojo 映射成数据库中的记录，避免几乎所有 JDBC 代码和手动设置参数以及获取结果集。</li>
+<li>通过 XML 文件或注解的方式将要执行的各种 SQL 语句管理起来。</li>
+</ul>
+<h4 id="2-mybatis-的优缺点"><a href="#2-mybatis-的优缺点" class="headerlink" title="2. mybatis 的优缺点"></a>2. mybatis 的优缺点</h4><ul>
+<li>优点<ul>
+<li>与 JDBC 相比，减少了很多模板代码，也不需要管理数据库连接。</li>
+<li>基于 SQL 语句编程，SQL 语句写在 XML 文件里，与应用程序解耦，便于统一管理。</li>
+<li>提供 XML 标签，支持编写动态 SQL 语句，并可重用。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>SQL 语句的编写工作量较大，尤其是字段多、关系表多时，对开发人员编写 SQL 语句有一定要求。</li>
+</ul>
+</li>
+</ul>
+<h3 id="二-mybatis原理"><a href="#二-mybatis原理" class="headerlink" title="二. mybatis原理"></a>二. mybatis原理</h3><ul>
+<li><p>配置基础配置XML，如 SqlMapConfig.xml。</p>
+</li>
+<li><p>配置映射器XML，如 mapper.xml。</p>
+</li>
+<li><p>解析XML，SqlSessionFactoryBuilder 构建出 SqlSessionFactory 对象。</p>
+</li>
+<li><p>SqlSessionFactory 产生 SqlSession 对象。</p>
+<ul>
+<li><p>Executor：执行器，由它统一调度其他三个对象来执行对应的SQL</p>
+</li>
+<li><p>StatementHandler：使用数据库的Statement执行操作</p>
+</li>
+<li><p>ParameterHandler：用于SQL对参数的处理</p>
+</li>
+<li><p>ResultHandler：进行最后数据集的封装返回处理</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取配置文件</span></span><br><span class="line">String resource = <span class="string">&quot;SqlMapConfig.xml&quot;</span>;</span><br><span class="line">InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line"><span class="comment">// 使用SqlSessionFactoryBuilder从xml配置文件中创建SqlSessionFactory</span></span><br><span class="line">SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"><span class="comment">// 创建数据库会话实例sqlSession</span></span><br><span class="line">SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line"><span class="comment">// 查询单个/多个记录，根据用户id查询用户信息(namespace.select的id)</span></span><br><span class="line">User user = sqlSession.selectOne(<span class="string">&quot;userDao.findUserById&quot;</span>, <span class="number">10</span>);</span><br><span class="line">List&lt;User&gt; list = sqlSession.selectList(<span class="string">&quot;userDao.findUserByName&quot;</span>,<span class="string">&quot;小明&quot;</span>);</span><br><span class="line"><span class="comment">// 插入user用户的信息</span></span><br><span class="line">sqlSession.insert(<span class="string">&quot;userDao.insertUser&quot;</span>, user);</span><br><span class="line"><span class="comment">// 删除用户</span></span><br><span class="line">sqlSession.delete(<span class="string">&quot;userDao.deleteUserById&quot;</span>,<span class="number">18</span>);</span><br><span class="line"><span class="comment">// 更新用户</span></span><br><span class="line">sqlSession.update(<span class="string">&quot;userDao.updateUser&quot;</span>, user);</span><br><span class="line"><span class="comment">// 提交事务</span></span><br><span class="line">sqlSession.commit();</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="三-开发方式"><a href="#三-开发方式" class="headerlink" title="三.开发方式"></a>三.开发方式</h3><h4 id="1-原始DAO开发"><a href="#1-原始DAO开发" class="headerlink" title="1. 原始DAO开发"></a>1. 原始DAO开发</h4><ul>
+<li><p>编写 DAO 接口类</p>
+</li>
+<li><p>编写 DAO 实现类，实现类注入成员属性 sqlSessionFactory</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">findUserById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">    SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">    User user = sqlSession.selectOne(<span class="string">&quot;userDao.findUserById&quot;</span>, id);</span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    sqlSession.close();</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//缺点：由于SQLSession是线程不安全的，所以必须放在方法内，但同时就导致方法内有很多重复冗余的代码。</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-mapper代理开发"><a href="#2-mapper代理开发" class="headerlink" title="2. mapper代理开发"></a>2. mapper代理开发</h4><ul>
+<li>编写 mapper.xml。</li>
+<li>编写 mapper 接口（类似于DAO接口）。</li>
+<li>通过 SqlSession.getMapper (接口名.class) 获取实现了该接口的代理类实例，即DAO实例。</li>
+<li>两者需要遵循一些规范才能生效<ul>
+<li>Mapper.xml 文件中的 namespace 与 mapper 接口的类全限定名相同</li>
+<li>Mapper接口方法名和 Mapper.xml 中定义的每个statement的id相同</li>
+<li>Mapper接口方法的输入参数类型和 mapper.xml 中定义的每个 SQL 的 parameterType 的类型相同</li>
+<li>Mapper接口方法的输出参数类型和 mapper.xml 中定义的每个 SQL 的 resultType 的类型相同</li>
+</ul>
+</li>
+</ul>
+<h3 id="四-核心配置文件"><a href="#四-核心配置文件" class="headerlink" title="四. 核心配置文件"></a>四. 核心配置文件</h3><ul>
+<li><p><a href="http://www.mybatis.org/mybatis-3/zh/configuration.html">核心配置文件的官方文档</a></p>
+</li>
+<li><p>db.properties</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">driver</span>=<span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="attr">url</span>=<span class="string">jdbc:mysql://localhost:3306/mybatis?useUnicode=true&amp;characterEncoding=UTF-8</span></span><br><span class="line"><span class="attr">username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">password</span>=<span class="string">password</span></span><br></pre></td></tr></table></figure></li>
+<li><p>核心配置文件</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">configuration</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--核心配置文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;db.properties&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--每一个Mapper.xml文件都需要在Mybatis核心配置文件中注册--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;UserMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="五-映射文件"><a href="#五-映射文件" class="headerlink" title="五. 映射文件"></a>五. 映射文件</h3><ul>
+<li><a href="https://mybatis.org/mybatis-3/zh/sqlmap-xml.html">映射文件的官方文档</a></li>
+</ul>
+<h4 id="1-映射文件"><a href="#1-映射文件" class="headerlink" title="1. 映射文件"></a>1. 映射文件</h4><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- mapper:根标签，namespace：命名空间，随便写，一般保证命名空间唯一 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;cn.itcast.mybatis.mapper.UserMapper&quot;</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 添加用户 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">insert</span>  <span class="attr">id</span>=<span class="string">&quot;insertUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.wyp.pojo.User&quot;</span>&gt;</span></span><br><span class="line">    insert into user(id,username,birthday,sex,address) values(#&#123;id&#125;,#&#123;username&#125;,#&#123;birthday&#125;,#&#123;sex&#125;,#&#123;address&#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 删除用户 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteUserById&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;int&quot;</span>&gt;</span></span><br><span class="line">    delete from user where id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 更新用户 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.wyp.pojo.User&quot;</span>&gt;</span></span><br><span class="line">    update user set username=#&#123;username&#125;,birthday=#&#123;birthday&#125;, sex=#&#123;sex&#125;,address=#&#123;address&#125; where id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 查询用户，也可以用resultMap来映射返回值 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findUserById&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;int&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.wyp.pojo.User&quot;</span>&gt;</span></span><br><span class="line">    select * from user where id = #&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-和"><a href="#2-和" class="headerlink" title="2. #{}和${}"></a>2. #{}和${}</h4><ul>
+<li><p><strong>#{}</strong> 占位符</p>
+<ul>
+<li>进行 java 类型和 jdbc 类型转换</li>
+<li>传值时会带<code>&quot;&quot;</code></li>
+<li>如果 parameterType 传入的是pojo类型，那么 <code>#&#123;&#125; </code>中的变量名称必须是 pojo 中对应的属性</li>
+<li>如果 parameterType 传入的是基础类型值，<code>#&#123;&#125;</code> 括号中可以是 value 或其它名称</li>
+<li>可以有效防止 sql 注入</li>
+</ul>
+</li>
+<li><p><strong>${}</strong> 占位符</p>
+<ul>
+<li>不进行 java 类型和 jdbc 类型转换</li>
+<li>传值时不带<code>&quot;&quot;</code></li>
+<li>如果 parameterType 传入的是pojo类型，那么 <code>$&#123;&#125;</code> 中的变量名称必须是 pojo 中对应的属性</li>
+<li>如果 parameterType 传输单个简单类型值，<code>$&#123;&#125;</code> 括号中只能是 value</li>
+</ul>
+</li>
+<li><p>使用情景</p>
+<ul>
+<li>mybatis 排序时使用 order by 动态参数时需要注意，使用<code>$&#123;&#125;</code>而不用<code>#&#123;&#125;</code></li>
+<li>模糊查询：<code>LIKE CONCAT(&#39;%&#39;,#&#123;value&#125;,&#39;%&#39;)</code> 或 <code>LIKE &#39;%$&#123;value&#125;%&#39;</code></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mybatis</category>
+      </categories>
+      <tags>
+        <tag>配置文件</tag>
+      </tags>
   </entry>
   <entry>
     <title>mybatisplus</title>
@@ -1090,6 +1193,10 @@
         <tag>数据类型</tag>
         <tag>事务</tag>
         <tag>jedis</tag>
+        <tag>持久化(aof、rdb)</tag>
+        <tag>主从复制</tag>
+        <tag>哨兵模式</tag>
+        <tag>缓存雪崩等</tag>
       </tags>
   </entry>
 </search>
