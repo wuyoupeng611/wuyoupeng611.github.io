@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>ElasticSearch</title>
+    <url>/post/d48132d3/</url>
+    <content><![CDATA[<span id="more"></span>]]></content>
+      <categories>
+        <category>ElasticSearch</category>
+      </categories>
+      <tags>
+        <tag>数据类型</tag>
+        <tag>事务</tag>
+        <tag>jedis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Nginx</title>
     <url>/post/65b69107/</url>
     <content><![CDATA[<span id="more"></span>
@@ -98,31 +111,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ElasticSearch</title>
-    <url>/post/d48132d3/</url>
-    <content><![CDATA[<span id="more"></span>]]></content>
-      <categories>
-        <category>ElasticSearch</category>
-      </categories>
-      <tags>
-        <tag>数据类型</tag>
-        <tag>事务</tag>
-        <tag>jedis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于springboot的小blog项目</title>
-    <url>/post/ed9909aa/</url>
-    <content><![CDATA[<span id="more"></span>]]></content>
-      <categories>
-        <category>item</category>
-      </categories>
-      <tags>
-        <tag>blog</tag>
-        <tag>item</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>RabbitMQ</title>
     <url>/post/b543ced0/</url>
     <content><![CDATA[<span id="more"></span>]]></content>
@@ -195,6 +183,30 @@
       <tags>
         <tag>镜像</tag>
         <tag>容器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于springboot的小blog项目</title>
+    <url>/post/ed9909aa/</url>
+    <content><![CDATA[<span id="more"></span>]]></content>
+      <categories>
+        <category>item</category>
+      </categories>
+      <tags>
+        <tag>blog</tag>
+        <tag>item</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker高级</title>
+    <url>/post/20caa7eb/</url>
+    <content><![CDATA[<span id="more"></span>]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>高级用法</tag>
       </tags>
   </entry>
   <entry>
@@ -412,18 +424,6 @@
       </tags>
   </entry>
   <entry>
-    <title>docker高级</title>
-    <url>/post/20caa7eb/</url>
-    <content><![CDATA[<span id="more"></span>]]></content>
-      <categories>
-        <category>docker</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-        <tag>高级用法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>git</title>
     <url>/post/518e617c/</url>
     <content><![CDATA[<span id="more"></span>
@@ -447,7 +447,7 @@
 <li><p>在提交前先将代码提交到暂存区。</p>
 </li>
 <li><p>提交到本地仓库，本地仓库中保存需改的各个历史版本。</p>
-<p><img data-src="D:\blog\source_posts\git的使用\Snipaste_2021-05-04_21-39-27.png" alt="工作流程"></p>
+<p><img data-src="https://wyp-blog.oss-cn-beijing.aliyuncs.com/git/Snipaste_2021-05-04_21-39-27.png" alt="工作流程"></p>
 </li>
 </ol>
 <h3 id="四-Git的使用"><a href="#四-Git的使用" class="headerlink" title="四.Git的使用"></a>四.Git的使用</h3><h4 id="1-Git的环境配置"><a href="#1-Git的环境配置" class="headerlink" title="1.Git的环境配置"></a>1.Git的环境配置</h4><ul>
@@ -510,7 +510,7 @@
 <ul>
 <li>从远程仓库中抓取与拉取</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，不会自动merge</span></span><br><span class="line">git merge [remote-name] [branch-name]</span><br><span class="line">git pull [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，会自动merge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal：refusing to merge unrelated histories），解决此问题可以在 git pull 命令后加入参数 --allow-unrealted-histories</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，不会自动merge</span></span><br><span class="line">git merge [remote-name] [branch-name]</span><br><span class="line">git pull [remote-name] [branch-name]		<span class="comment">#从远程仓库获取最新版本到本地仓库，会自动merge</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意：如果当前本地仓库不是从远程仓库克隆，而是本地创建的仓库，并且仓库中存在文件，此时再从远程仓库拉取文件的时候会报错（fatal：refusing to merge unrelated histories），解决此问题可以在 git pull 命令后加入参数 --rebase</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>推送到远程仓库</li>
@@ -658,6 +658,19 @@
       </tags>
   </entry>
   <entry>
+    <title>mybatisplus</title>
+    <url>/post/ac57c2de/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>mybatisplus</category>
+      </categories>
+      <tags>
+        <tag>数据类型</tag>
+        <tag>事务</tag>
+        <tag>jedis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>nosql认识</title>
     <url>/post/d1b72ac1/</url>
     <content><![CDATA[<span id="more"></span>
@@ -676,19 +689,6 @@
         <tag>nosql</tag>
         <tag>了解</tag>
         <tag>CAP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mybatisplus</title>
-    <url>/post/ac57c2de/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>mybatisplus</category>
-      </categories>
-      <tags>
-        <tag>数据类型</tag>
-        <tag>事务</tag>
-        <tag>jedis</tag>
       </tags>
   </entry>
   <entry>
