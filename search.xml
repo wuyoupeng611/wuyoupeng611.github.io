@@ -14,6 +14,18 @@
       </tags>
   </entry>
   <entry>
+    <title>基于springboot的小blog项目</title>
+    <url>/post/ed9909aa/</url>
+    <content><![CDATA[<span id="more"></span>]]></content>
+      <categories>
+        <category>item</category>
+      </categories>
+      <tags>
+        <tag>blog</tag>
+        <tag>item</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Nginx</title>
     <url>/post/65b69107/</url>
     <content><![CDATA[<span id="more"></span>
@@ -183,18 +195,6 @@
       <tags>
         <tag>镜像</tag>
         <tag>容器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于springboot的小blog项目</title>
-    <url>/post/ed9909aa/</url>
-    <content><![CDATA[<span id="more"></span>]]></content>
-      <categories>
-        <category>item</category>
-      </categories>
-      <tags>
-        <tag>blog</tag>
-        <tag>item</tag>
       </tags>
   </entry>
   <entry>
@@ -658,40 +658,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mybatisplus</title>
-    <url>/post/ac57c2de/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>mybatisplus</category>
-      </categories>
-      <tags>
-        <tag>数据类型</tag>
-        <tag>事务</tag>
-        <tag>jedis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>nosql认识</title>
-    <url>/post/d1b72ac1/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-<h3 id="一-NoSQL的介绍"><a href="#一-NoSQL的介绍" class="headerlink" title="一.NoSQL的介绍"></a>一.NoSQL的介绍</h3><ul>
-<li><strong>NoSQL</strong>（<strong>N</strong>ot <strong>o</strong>nly <strong>SQL</strong>），是对不同于传统的<a href="https://zh.wikipedia.org/wiki/%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB">关系数据库</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">数据库管理系统</a>的统称。</li>
-<li>NoSQL用于超大规模数据的存储。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。</li>
-</ul>
-<h3 id="二"><a href="#二" class="headerlink" title="二."></a>二.</h3>]]></content>
-      <categories>
-        <category>nosql</category>
-      </categories>
-      <tags>
-        <tag>nosql</tag>
-        <tag>了解</tag>
-        <tag>CAP</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mybatis</title>
     <url>/post/15832afd/</url>
     <content><![CDATA[<span id="more"></span>
@@ -797,6 +763,75 @@
       </categories>
       <tags>
         <tag>配置文件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mybatisplus</title>
+    <url>/post/ac57c2de/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>mybatisplus</category>
+      </categories>
+      <tags>
+        <tag>数据类型</tag>
+        <tag>事务</tag>
+        <tag>jedis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nosql认识</title>
+    <url>/post/d1b72ac1/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+<h3 id="一-NoSQL的介绍"><a href="#一-NoSQL的介绍" class="headerlink" title="一.NoSQL的介绍"></a>一.NoSQL的介绍</h3><ul>
+<li><strong>NoSQL</strong>（<strong>N</strong>ot <strong>o</strong>nly <strong>SQL</strong>），是对不同于传统的<a href="https://zh.wikipedia.org/wiki/%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB">关系数据库</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">数据库管理系统</a>的统称。</li>
+<li>NoSQL用于超大规模数据的存储。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。</li>
+</ul>
+<h3 id="二"><a href="#二" class="headerlink" title="二."></a>二.</h3>]]></content>
+      <categories>
+        <category>nosql</category>
+      </categories>
+      <tags>
+        <tag>nosql</tag>
+        <tag>了解</tag>
+        <tag>CAP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式</title>
+    <url>/post/364ea8cc/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<h3 id="1-设计模式总览"><a href="#1-设计模式总览" class="headerlink" title="1. 设计模式总览"></a>1. 设计模式总览</h3><ul>
+<li>创建型模式（Creational | Patterns）<ul>
+<li>单例模式（Singleton）</li>
+<li>原型模式（Prototype）</li>
+<li>工厂方法模式（FactoryMethod）</li>
+<li>抽象工厂模式（AbstractFactory）</li>
+<li>建造者模式（Builder）</li>
+</ul>
+</li>
+<li>结构型模式（Structural | Patterns）</li>
+<li>行为型模式（Behavioral | Patterns）</li>
+</ul>
+<p><img data-src="C:\Users\W-Y-P\AppData\Roaming\Typora\typora-user-images\image-20211202143846768.png" alt="image-20211202143846768"></p>
+<h3 id="2-设计的七大原则"><a href="#2-设计的七大原则" class="headerlink" title="2. 设计的七大原则"></a>2. 设计的七大原则</h3><ul>
+<li>开闭原则（Open Closed Principle，OCP）：拓展新类而不是修改旧类</li>
+<li>里氏替换原则（Liskov Substitution Principle， LSP）：继承父类而不去改变父类</li>
+<li>依赖倒置原则（Dependence Inversion Principle，DIP）：面向接口编程，而不是面向实现类</li>
+<li>单一职责原则（Single Responsibility Principle，SRP）：每个类只负责自己的事情，而不是变成万能 </li>
+<li>接口隔离原则（Interface Segregation Principle，ISP）：各个类建立自己的专用，而不是建立万能接口</li>
+<li>迪米特法则（Law of Demeter，LoD）：无需直接交互两个类，如果需要交互，使用中间者</li>
+<li>合成复用原则（Composite Reuse Principle，CRP）：优先组合，其次继承</li>
+</ul>
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
